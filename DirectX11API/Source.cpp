@@ -5,15 +5,26 @@
 #include <d3dx11effect.h>
 #include <xnamath.h>
 #include <DxErr.h>
+
 struct Vertex
 {
 	XMFLOAT3 Pos;
+	XMFLOAT3 Normal;
 	XMFLOAT4 Color;
 };
 
 struct ConstantBuffer
 {
-	XMMATRIX gWorldViewProj;
+	XMMATRIX gWorld;
+	XMMATRIX gView;
+	XMMATRIX gProjection;
+};
+
+struct cbPerFrame
+{
+	XMFLOAT3 gLightDirection;
+	XMFLOAT3 gLightPosition;
+	XMFLOAT4 gLightColor;
 };
 
 namespace Colors
@@ -29,30 +40,31 @@ namespace Colors
 
 }
 
-HINSTANCE               g_hInst = NULL;
-HWND                    g_hWnd = NULL;
-D3D_DRIVER_TYPE         g_driverType = D3D_DRIVER_TYPE_NULL;
-D3D_FEATURE_LEVEL       g_featureLevel = D3D_FEATURE_LEVEL_11_0;
-ID3D11Device*           g_pd3dDevice = NULL;
-ID3D11DeviceContext*    g_pImmediateContext = NULL;
-IDXGISwapChain*         g_pSwapChain = NULL;
-ID3D11RenderTargetView* g_pRenderTargetView = NULL;
-ID3D11Texture2D*        g_pDepthStencil = NULL;
-ID3D11DepthStencilView* g_pDepthStencilView = NULL;
-ID3D11VertexShader*     g_pVertexShader = NULL;
-ID3D11PixelShader*      g_pPixelShader = NULL;
-ID3D11InputLayout*      g_pVertexLayout = NULL;
-ID3D11Buffer*           g_pVertexBuffer = NULL;
-ID3D11Buffer*           g_pIndexBuffer = NULL;
-ID3D11Buffer*           g_pVSConstBuffer = NULL;
-ID3D11Buffer*           g_pPSConstBuffer = NULL;
-ID3D11Buffer*           g_pConstantBuffer = NULL;
-ID3D11RasterizerState*  g_pRasterizerState = NULL;
-UINT                    g_IndexNum = 0;
-XMMATRIX                g_World;
-XMMATRIX                g_View;
-XMMATRIX                g_Projection;
-
+HINSTANCE				g_hInst = NULL;
+HWND					g_hWnd = NULL;
+D3D_DRIVER_TYPE			g_driverType = D3D_DRIVER_TYPE_NULL;
+D3D_FEATURE_LEVEL		g_featureLevel = D3D_FEATURE_LEVEL_11_0;
+ID3D11Device*			g_pd3dDevice = NULL;
+ID3D11DeviceContext*	g_pImmediateContext = NULL;
+IDXGISwapChain*			g_pSwapChain = NULL;
+ID3D11RenderTargetView*	g_pRenderTargetView = NULL;
+ID3D11Texture2D*		g_pDepthStencil = NULL;
+ID3D11DepthStencilView*	g_pDepthStencilView = NULL;
+ID3D11VertexShader*		g_pVertexShader = NULL;
+ID3D11PixelShader*		g_pPixelShader = NULL;
+ID3D11InputLayout*		g_pVertexLayout = NULL;
+ID3D11Buffer*			g_pVertexBuffer = NULL;
+ID3D11Buffer*			g_pIndexBuffer = NULL;
+ID3D11Buffer*			g_pVSConstBuffer = NULL;
+ID3D11Buffer*			g_pPSConstBuffer = NULL;
+ID3D11RasterizerState*	g_pRasterizerState = NULL;
+UINT					g_IndexNum = 0;
+XMMATRIX				g_World;
+XMMATRIX				g_View;
+XMMATRIX				g_Projection;
+XMFLOAT3				g_LightDirection;
+XMFLOAT3				g_LightPosition;
+XMFLOAT4				g_LightColor;
 
 HRESULT InitWindow( HINSTANCE hInstance, int nCmdShow );
 LRESULT CALLBACK WndProc( HWND, UINT, WPARAM, LPARAM );
@@ -275,10 +287,9 @@ HRESULT InitDevice( )
 
 	D3D11_INPUT_ELEMENT_DESC layout[] =
 	{
-		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0,
-		D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		{ "COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 12,
-		D3D11_INPUT_PER_VERTEX_DATA, 0 }
+		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0 }
 	};
 	DWORD shaderFlags = 0;
 #if defined( DEBUG ) || defined( _DEBUG )
@@ -324,16 +335,36 @@ HRESULT InitDevice( )
 	g_pImmediateContext->IASetInputLayout( g_pVertexLayout );
 
 	// create Vertex Buffer
+	// init normal vector
+	XMFLOAT3 normal1, normal2, normal3, normal4, normal5, normal6, normal7, normal8;
+	XMVECTOR normal = XMVectorSet( -1.f, -1.f, -1.f, 0.f );
+	normal = XMVector3Normalize( normal );
+	XMStoreFloat3( &normal1, normal );
+	normal = XMVectorSet( -1.f, +1.f, -1.f, 0.f );
+	XMStoreFloat3( &normal2, normal );
+	normal = XMVectorSet( +1.f, +1.f, -1.f, 0.f );
+	XMStoreFloat3( &normal3, normal );
+	normal = XMVectorSet( +1.f, -1.f, -1.f, 0.f );
+	XMStoreFloat3( &normal4, normal );
+	normal = XMVectorSet( -1.f, -1.f, +1.f, 0.f );
+	XMStoreFloat3( &normal5, normal );
+	normal = XMVectorSet( -1.f, +1.f, +1.f, 0.f );
+	XMStoreFloat3( &normal6, normal );
+	normal = XMVectorSet( +1.f, +1.f, +1.f, 0.f );
+	XMStoreFloat3( &normal7, normal );
+	normal = XMVectorSet( +1.f, -1.f, +1.f, 0.f );
+	XMStoreFloat3( &normal8, normal );
+
 	Vertex vertices[] = 
 	{
-		{ XMFLOAT3( -1.f, -1.f, -1.f ), ( const float* )&Colors::White },
-		{ XMFLOAT3( -1.f, +1.f, -1.f ), ( const float* )&Colors::Red },
-		{ XMFLOAT3( +1.f, +1.f, -1.f ), ( const float* )&Colors::Red },
-		{ XMFLOAT3( +1.f, -1.f, -1.f ), ( const float* )&Colors::Green },
-		{ XMFLOAT3( -1.f, -1.f, +1.f ), ( const float* )&Colors::Blue },
-		{ XMFLOAT3( -1.f, +1.f, +1.f ), ( const float* )&Colors::Yellow },
-		{ XMFLOAT3( +1.f, +1.f, +1.f ), ( const float* )&Colors::Cyan },
-		{ XMFLOAT3( +1.f, -1.f, +1.f ), ( const float* )&Colors::Magenta }
+		{ XMFLOAT3( -1.f, -1.f, -1.f ), normal1, ( const float* )&Colors::White },
+		{ XMFLOAT3( -1.f, +1.f, -1.f ), normal2, ( const float* )&Colors::Red },
+		{ XMFLOAT3( +1.f, +1.f, -1.f ), normal3, ( const float* )&Colors::Red },
+		{ XMFLOAT3( +1.f, -1.f, -1.f ), normal4, ( const float* )&Colors::Green },
+		{ XMFLOAT3( -1.f, -1.f, +1.f ), normal5, ( const float* )&Colors::Blue },
+		{ XMFLOAT3( -1.f, +1.f, +1.f ), normal6, ( const float* )&Colors::Yellow },
+		{ XMFLOAT3( +1.f, +1.f, +1.f ), normal7, ( const float* )&Colors::Cyan },
+		{ XMFLOAT3( +1.f, -1.f, +1.f ), normal8, ( const float* )&Colors::Magenta }
 	};
 	D3D11_BUFFER_DESC bd;
 	ZeroMemory( &bd, sizeof( bd ) );
@@ -355,18 +386,18 @@ HRESULT InitDevice( )
 
 	UINT indices[36] =
 	{
-		0, 1, 2, // Triangle 0
-		0, 2, 3, // Triangle 1
-		0, 3, 4, // Triangle 2
-		3, 4, 7, // Triangle 3
-		0, 5, 1, // Triangle 4
-		0, 4, 5, // Triangle 5
-		4, 5, 6, // Triangle 6
-		4, 6, 7, // Triangle 7
-		2, 6, 7, // Triangle 2
-		2, 3, 7, // Triangle 3
-		1, 2, 6, // Triangle 4
-		1, 5, 6, // Triangle 5
+		0, 1, 2,
+		0, 2, 3,
+		0, 3, 4,
+		3, 4, 7,
+		0, 5, 1,
+		0, 4, 5,
+		4, 5, 6,
+		4, 6, 7,
+		2, 6, 7,
+		2, 3, 7,
+		1, 2, 6,
+		1, 5, 6,
 	};
 	// Describe the index buffer we are going to create.
 	D3D11_BUFFER_DESC ibd;
@@ -389,12 +420,12 @@ HRESULT InitDevice( )
 	 // Set primitive topology
 	g_pImmediateContext->IASetPrimitiveTopology( D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST );
 
-	// Create the constant buffer
+	// Create the g_pVSConstBuffer
 	bd.Usage = D3D11_USAGE_DEFAULT;
 	bd.ByteWidth = sizeof( ConstantBuffer );
 	bd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 	bd.CPUAccessFlags = 0;
-	hr = g_pd3dDevice->CreateBuffer( &bd, NULL, &g_pConstantBuffer );
+	hr = g_pd3dDevice->CreateBuffer( &bd, NULL, &g_pVSConstBuffer );
 	if( FAILED( hr ) )
 		return hr;
 
@@ -410,6 +441,19 @@ HRESULT InitDevice( )
 	// Initialize the projection matrix
 	g_Projection = XMMatrixPerspectiveFovLH( XM_PIDIV2, width / ( FLOAT )height, 0.01f, 100.0f );
 
+	// Create the g_pPSConstBuffer
+	bd.Usage = D3D11_USAGE_DEFAULT;
+	bd.ByteWidth = sizeof( cbPerFrame ) * 16;
+	bd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	bd.CPUAccessFlags = 0;
+	hr = g_pd3dDevice->CreateBuffer( &bd, NULL, &g_pPSConstBuffer );
+	if( FAILED( hr ) )
+		return hr;
+	// Initialize light vector
+	g_LightDirection = XMFLOAT3( 0.f, 0.f, 1.f );
+	g_LightPosition = XMFLOAT3( 1.f, 1.f, 1.f );
+	g_LightColor = XMFLOAT4( 1.f, 1.f, 1.f, 1.f );
+	
 	// Set RasterizerState
 	D3D11_RASTERIZER_DESC rsDesc;
 	ZeroMemory( &rsDesc, sizeof( D3D11_RASTERIZER_DESC ) );
@@ -427,7 +471,8 @@ void CleanupDevice( )
 {
 	if( g_pImmediateContext ) g_pImmediateContext->ClearState( );
 
-	 if( g_pConstantBuffer ) g_pConstantBuffer->Release( );
+	if( g_pPSConstBuffer ) g_pPSConstBuffer->Release( );
+	if( g_pVSConstBuffer ) g_pVSConstBuffer->Release( );
 	if( g_pVertexBuffer ) g_pVertexBuffer->Release( );
 	if( g_pIndexBuffer ) g_pIndexBuffer->Release( );
 	if( g_pVertexLayout ) g_pVertexLayout->Release( );
@@ -463,12 +508,19 @@ void Render( )
 	g_pImmediateContext->ClearDepthStencilView( g_pDepthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0 );
 
 	ConstantBuffer cb;
-	XMMATRIX wvp = XMMatrixMultiply( XMMatrixMultiply( g_World, g_View ), g_Projection );
-	cb.gWorldViewProj = XMMatrixTranspose( wvp );
+	cb.gWorld = XMMatrixTranspose( g_World );
+	cb.gView = XMMatrixTranspose( g_View );
+	cb.gProjection = XMMatrixTranspose( g_Projection );
 
-	g_pImmediateContext->UpdateSubresource( g_pConstantBuffer, 0, NULL, &cb, 0, 0 );
+	cbPerFrame cbl;
+	cbl.gLightColor = g_LightColor;
+	cbl.gLightDirection = g_LightDirection;
+	cbl.gLightPosition = g_LightPosition;
 
-	g_pImmediateContext->VSSetConstantBuffers( 0, 1, &g_pConstantBuffer );
+	g_pImmediateContext->UpdateSubresource( g_pVSConstBuffer, 0, NULL, &cb, 0, 0 );
+	g_pImmediateContext->UpdateSubresource( g_pPSConstBuffer, 0, NULL, &cbl, 0, 0 );
+	g_pImmediateContext->VSSetConstantBuffers( 0, 1, &g_pVSConstBuffer );
+	g_pImmediateContext->PSSetConstantBuffers( 0, 1, &g_pPSConstBuffer );
 	g_pImmediateContext->DrawIndexed( 36, 0, 0 );
 
 	g_pSwapChain->Present( 0, 0 );

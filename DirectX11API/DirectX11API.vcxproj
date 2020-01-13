@@ -52,15 +52,18 @@
       <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\P2\DX11API\SDK\Include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>d3d11.lib;d3dx11.lib;dxerr.lib;D3DX11Effects.lib;D3DX11EffectsD.lib;d3dcompiler.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\P2\DX11API\SDK\Lib\x86</AdditionalLibraryDirectories>
+      <AdditionalDependencies>Effects11.lib;Effects11D.lib;d3d11.lib;d3dx11.lib;dxerr.lib;d3dcompiler.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <FxCompile>
       <ShaderType>Effect</ShaderType>
+    </FxCompile>
+    <FxCompile>
       <ShaderModel>5.0</ShaderModel>
     </FxCompile>
   </ItemDefinitionGroup>
@@ -82,6 +85,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Device.h" />
+    <ClInclude Include="Screen.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Device.cpp" />
+    <ClCompile Include="Screen.cpp" />
     <ClCompile Include="Source.cpp" />
   </ItemGroup>
   <ItemGroup>

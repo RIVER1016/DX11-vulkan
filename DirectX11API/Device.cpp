@@ -1,108 +1,23 @@
+#pragma once
 #include "Device.h"
 
-void Device::init( HWND ghWnd )
+void Device::init( HWND ghWnd, Transform* ts, Light* li )
 {
 	g_hWnd = ghWnd;
 	RECT rc;
 	GetClientRect( g_hWnd, &rc );
 	width = rc.right - rc.left;
 	height = rc.bottom - rc.top;
-	// Initialize index buffer data
-	UINT indices[36] =
-	{
-		0, 1, 2,
-		0, 2, 3,
-		0, 3, 4,
-		3, 4, 7,
-		0, 5, 1,
-		0, 4, 5,
-		4, 5, 6,
-		4, 6, 7,
-		2, 6, 7,
-		2, 3, 7,
-		1, 2, 6,
-		1, 5, 6,
-	};
-	// Initialize Vertex buffer data
-	XMFLOAT3 normal1, normal2, normal3, normal4, normal5, normal6, normal7, normal8;
-	XMVECTOR normal = XMVectorSet( -1.f, -1.f, -1.f, 0.f );
-	normal = XMVector3Normalize( normal );
-	XMStoreFloat3( &normal1, normal );
-	normal = XMVectorSet( -1.f, +1.f, -1.f, 0.f );
-	normal = XMVector3Normalize( normal );
-	XMStoreFloat3( &normal2, normal );
-	normal = XMVectorSet( +1.f, +1.f, -1.f, 0.f );
-	normal = XMVector3Normalize( normal );
-	XMStoreFloat3( &normal3, normal );
-	normal = XMVectorSet( +1.f, -1.f, -1.f, 0.f );
-	normal = XMVector3Normalize( normal );
-	XMStoreFloat3( &normal4, normal );
-	normal = XMVectorSet( -1.f, -1.f, +1.f, 0.f );
-	normal = XMVector3Normalize( normal );
-	XMStoreFloat3( &normal5, normal );
-	normal = XMVectorSet( -1.f, +1.f, +1.f, 0.f );
-	normal = XMVector3Normalize( normal );
-	XMStoreFloat3( &normal6, normal );
-	normal = XMVectorSet( +1.f, +1.f, +1.f, 0.f );
-	normal = XMVector3Normalize( normal );
-	XMStoreFloat3( &normal7, normal );
-	normal = XMVectorSet( +1.f, -1.f, +1.f, 0.f );
-	normal = XMVector3Normalize( normal );
-	XMStoreFloat3( &normal8, normal );
-
-	Vertex vertices[] = 
-	{
-		{ XMFLOAT3( -1.f, -1.f, -1.f ), normal1, ( const float* )&Colors::White },
-		{ XMFLOAT3( -1.f, +1.f, -1.f ), normal2, ( const float* )&Colors::Red },
-		{ XMFLOAT3( +1.f, +1.f, -1.f ), normal3, ( const float* )&Colors::Red },
-		{ XMFLOAT3( +1.f, -1.f, -1.f ), normal4, ( const float* )&Colors::Green },
-		{ XMFLOAT3( -1.f, -1.f, +1.f ), normal5, ( const float* )&Colors::Blue },
-		{ XMFLOAT3( -1.f, +1.f, +1.f ), normal6, ( const float* )&Colors::Yellow },
-		{ XMFLOAT3( +1.f, +1.f, +1.f ), normal7, ( const float* )&Colors::Cyan },
-		{ XMFLOAT3( +1.f, -1.f, +1.f ), normal8, ( const float* )&Colors::Magenta }
-	};
-	// Initialize PS cbuffer
-	XMFLOAT4 g_LightDirection = XMFLOAT4( 0.f, 0.f, 1.f, 1.f );
-	XMFLOAT4 g_LightPosition = XMFLOAT4( 1.f, 1.f, 1.f, 1.f );
-	XMFLOAT4 g_LightColor = XMFLOAT4( 1.f, 1.f, 1.f, 1.f );
-	XMFLOAT4 materialSpecColor = XMFLOAT4( 2.f, 2.f, 2.f, 1.f );
-	XMFLOAT4 gEyePos = XMFLOAT4(0.0f, 0.0f, -5.0f, 0.0f );
-	PSConstBuffer cbl;
-	cbl.gLightColor = g_LightColor;
-	cbl.gLightDirection = g_LightDirection;
-	cbl.gLightPosition = g_LightPosition;
-	cbl.gEyePos = gEyePos;
-	cbl.materialSpecColor = materialSpecColor;
-
-	// Initialize VS cbuffer
-	g_World = XMMatrixIdentity( );
-	XMVECTOR Eye = XMVectorSet( 0.0f, 0.0f, -5.0f, 0.0f );
-	XMVECTOR At = XMVectorSet( 0.0f, 1.0f, 0.0f, 0.0f );
-	XMVECTOR Up = XMVectorSet( 0.0f, 1.0f, 0.0f, 0.0f );
-	g_View = XMMatrixLookAtLH( Eye, At, Up );
-	g_Projection = XMMatrixPerspectiveFovLH( XM_PIDIV2, width / ( FLOAT )height, 0.01f, 100.0f );
-	
-	VSConstBuffer cb;
-	XMMATRIX gWorld = g_World;
-	XMMATRIX gView = g_View;
-	XMMATRIX gProjection = g_Projection;
-	cb.gWorld = XMMatrixTranspose( gWorld );
-	cb.gView = XMMatrixTranspose( gView );
-	cb.gProjection = XMMatrixTranspose( gProjection );
-
+	framebuffer = new Framebuffer( );
 	createSwapChain( );
-	createRenderTargetView( );
-	createDepth( );
+	setFramebuffer( );
 	setViewPort( 0.f, 1.f );
 	setVertexShader( );
 	setPixelShader( );
-	setInputLayout( );
-	setVertexBuffer( vertices );
-	setIndexBuffer( indices );
 	setPrimitiveTopology( );
-	setVSConstBuffer( cb );
-	setPSConstBuffer( cbl );
 	setRasterizerState( );
+	transform = ts;
+	light = li;
 	hr = S_OK;
 }
 
@@ -173,54 +88,10 @@ HRESULT Device::createSwapChain( )
 	return S_OK;
 }
 
-HRESULT Device::createRenderTargetView( )
+void Device::setFramebuffer( )
 {
-	// 创建 render target view
-	ID3D11Texture2D* pBackBuffer = NULL;
-	hr = g_pSwapChain->GetBuffer( 0, __uuidof( ID3D11Texture2D ), ( LPVOID* )&pBackBuffer );
-	if( FAILED( hr ) )
-		return hr;
-
-	hr = g_pd3dDevice->CreateRenderTargetView( pBackBuffer, NULL, &g_pRenderTargetView );
-	pBackBuffer->Release( );
-	if( FAILED( hr ) )
-		return hr;
-	return S_OK;
-}
-
-HRESULT Device::createDepth( )
-{
-	// 创建深度模板缓冲
-	ID3D11Texture2D* g_pDepthStencil = NULL;
-	D3D11_TEXTURE2D_DESC descDepth;
-	ZeroMemory( &descDepth, sizeof( descDepth ) );
-	descDepth.Width = width;
-	descDepth.Height = height;
-	descDepth.MipLevels = 1;
-	descDepth.ArraySize = 1;
-	descDepth.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
-	descDepth.SampleDesc.Count = 1;
-	descDepth.SampleDesc.Quality = 0;
-	descDepth.Usage = D3D11_USAGE_DEFAULT;
-	descDepth.BindFlags = D3D11_BIND_DEPTH_STENCIL;
-	descDepth.CPUAccessFlags = 0;
-	descDepth.MiscFlags = 0;
-	hr = g_pd3dDevice->CreateTexture2D( &descDepth, NULL, &g_pDepthStencil );
-	if ( FAILED( hr ) )
-		return hr;
-	// 创建深度模板视图
-	D3D11_DEPTH_STENCIL_VIEW_DESC descDSV;
-	ZeroMemory( &descDSV, sizeof( descDSV ) );
-	descDSV.Format = descDepth.Format;
-	descDSV.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
-	descDSV.Texture2D.MipSlice = 0;
-	hr = g_pd3dDevice->CreateDepthStencilView( g_pDepthStencil, &descDSV, &g_pDepthStencilView );
-	if ( FAILED( hr ) )
-		return hr;
-
-	g_pImmediateContext->OMSetRenderTargets( 1, &g_pRenderTargetView, g_pDepthStencilView );
-	g_pDepthStencil->Release( );
-	return S_OK;
+	framebuffer->createRenderTargetView( g_pd3dDevice, g_pSwapChain );
+	framebuffer->createDepthStencilView( g_pd3dDevice, g_pImmediateContext, width, height );
 }
 
 void Device::setViewPort( const float& MinDepth, const float& MaxDepth )
@@ -307,99 +178,9 @@ HRESULT Device::setPixelShader( )
 	return S_OK;
 }
 
-void Device::setInputLayout( )
-{
-	D3D11_INPUT_ELEMENT_DESC layout[] =
-	{
-		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		{ "COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0 }
-	};
-	UINT numElements = ARRAYSIZE( layout );
-	ID3D11InputLayout* g_pVertexLayout = NULL;
-	g_pd3dDevice->CreateInputLayout( layout, numElements, pVSBlob->GetBufferPointer( ), pVSBlob->GetBufferSize( ), &g_pVertexLayout );
-	pVSBlob->Release( );
-	g_pImmediateContext->IASetInputLayout( g_pVertexLayout );
-	g_pVertexLayout->Release( );
-}
-
-HRESULT Device::setVertexBuffer( const Vertex* vertices )
-{
-	ID3D11Buffer* g_pVertexBuffer;
-	ZeroMemory( &bd, sizeof( bd ) );
-	bd.Usage = D3D11_USAGE_DEFAULT;
-	bd.ByteWidth = sizeof( Vertex ) * 8;
-	bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-	bd.CPUAccessFlags = 0;
-	D3D11_SUBRESOURCE_DATA InitData;
-	ZeroMemory( &InitData, sizeof( InitData ) );
-	InitData.pSysMem = vertices;
-	hr = g_pd3dDevice->CreateBuffer( &bd, &InitData, &g_pVertexBuffer );
-	if( FAILED( hr ) )
-		return hr;
-
-	UINT stride = sizeof( Vertex );
-	UINT offset = 0;
-	g_pImmediateContext->IASetVertexBuffers( 0, 1, &g_pVertexBuffer, &stride, &offset );
-	g_pVertexBuffer->Release( );
-	return S_OK;
-}
-
-void Device::setIndexBuffer( const UINT* indices )
-{
-	D3D11_BUFFER_DESC ibd;
-	ibd.Usage = D3D11_USAGE_IMMUTABLE;
-	ibd.ByteWidth = sizeof( UINT ) * 36;
-	ibd.BindFlags =  D3D11_BIND_INDEX_BUFFER ;
-	ibd.CPUAccessFlags = 0;
-	ibd.MiscFlags = 0;
-	ibd.StructureByteStride = 0;
-
-	D3D11_SUBRESOURCE_DATA iInitData;
-	iInitData.pSysMem = indices;
-
-	ID3D11Buffer* g_pIndexBuffer;
-	hr = g_pd3dDevice->CreateBuffer( &ibd, &iInitData, &g_pIndexBuffer );
-	g_pImmediateContext->IASetIndexBuffer( g_pIndexBuffer, DXGI_FORMAT_R32_UINT, 0 );
-	g_pIndexBuffer->Release( );
-}
-
 void Device::setPrimitiveTopology( )
 {
 	g_pImmediateContext->IASetPrimitiveTopology( D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST );
-}
-
-HRESULT Device::setVSConstBuffer( const VSConstBuffer& cb )
-{
-	// Create the g_pVSConstBuffer
-	bd.Usage = D3D11_USAGE_DEFAULT;
-	bd.ByteWidth = sizeof( VSConstBuffer );
-	bd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	bd.CPUAccessFlags = 0;
-	hr = g_pd3dDevice->CreateBuffer( &bd, NULL, &g_pVSConstBuffer );
-	if( FAILED( hr ) )
-		return hr;
-
-	g_pImmediateContext->UpdateSubresource( g_pVSConstBuffer, 0, NULL, &cb, 0, 0 );
-	g_pImmediateContext->VSSetConstantBuffers( 0, 1, &g_pVSConstBuffer );
-	return S_OK;
-}
-
-HRESULT Device::setPSConstBuffer( const PSConstBuffer& cbl )
-{
-	// Create the g_pPSConstBuffer
-	bd.Usage = D3D11_USAGE_DEFAULT;
-	bd.ByteWidth = sizeof( PSConstBuffer );
-	bd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	bd.CPUAccessFlags = 0;
-	hr = g_pd3dDevice->CreateBuffer( &bd, NULL, &g_pPSConstBuffer );
-	if( FAILED( hr ) )
-		return hr;
-
-	g_pImmediateContext->UpdateSubresource( g_pPSConstBuffer, 0, NULL, &cbl, 0, 0 );
-	g_pImmediateContext->PSSetConstantBuffers( 0, 1, &g_pPSConstBuffer );
-	g_pPSConstBuffer->Release( );
-	return S_OK;
 }
 
 void Device::setRasterizerState( )
@@ -417,17 +198,16 @@ void Device::setRasterizerState( )
 	g_pRasterizerState->Release( );
 }
 
-void Device::cleanUp( )
+void Device::Release( )
 {
 	if( g_pImmediateContext ) g_pImmediateContext->ClearState( );
-	if( g_pVSConstBuffer ) g_pVSConstBuffer->Release( );
-	if( g_pDepthStencilView ) g_pDepthStencilView->Release( );
-	if( g_pRenderTargetView ) g_pRenderTargetView->Release( );
+	if ( framebuffer ) framebuffer->Release( );
 	if( g_pSwapChain ) g_pSwapChain->Release( );
 	if( g_pImmediateContext ) g_pImmediateContext->Release( );
 	if( g_pd3dDevice ) g_pd3dDevice->Release( );
 }
-void Device::render( )
+
+VSConstBuffer Device::rotateWorld( )
 {
 	// Update our time
 	static float t = 0.0f;
@@ -443,25 +223,62 @@ void Device::render( )
 			dwTimeStart = dwTimeCur;
 		t = ( dwTimeCur - dwTimeStart ) / 1000.0f;
 	}
+	XMMATRIX g_World = XMMatrixRotationY( t );
+	transform->setWorld( g_World );
+	VSConstBuffer cb = VSConstBuffer( transform );
 
-	g_World = XMMatrixRotationY( t );
-
-	float ClearColor[4] = { 0.f, 0.f, 0.f, 1.f };
-	g_pImmediateContext->ClearRenderTargetView( g_pRenderTargetView, ClearColor );
-	g_pImmediateContext->ClearDepthStencilView( g_pDepthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0 );
-
-	VSConstBuffer cb;
-	XMMATRIX gWorld = g_World;
-	XMMATRIX gView = g_View;
-	XMMATRIX gProjection = g_Projection;
-	cb.gWorld = XMMatrixTranspose( gWorld );
-	cb.gView = XMMatrixTranspose( gView );
-	cb.gProjection = XMMatrixTranspose( gProjection );
-
-	g_pImmediateContext->UpdateSubresource( g_pVSConstBuffer, 0, NULL, &cb, 0, 0 );
-	g_pImmediateContext->VSSetConstantBuffers( 0, 1, &g_pVSConstBuffer );
-	g_pImmediateContext->DrawIndexed( 36, 0, 0 );
-
-	g_pSwapChain->Present( 0, 0 );
+	return cb;
 }
 
+void Device::clearDevice( float* clearColor )
+{
+	framebuffer->clearRenderTargetView( g_pImmediateContext, clearColor );
+	framebuffer->clearDepthStencilView( g_pImmediateContext );
+}
+
+MSG Device::idle( Geo geo )
+{
+	MSG msg = { 0 };
+	// input geo
+	geo.init( pVSBlob );
+	geo.draw( g_pd3dDevice, g_pImmediateContext, bd );
+
+	// Initialize VS cbuffer
+	VSConstBuffer cb = VSConstBuffer( transform );
+	cb.setVSConstBuffer( g_pd3dDevice, g_pImmediateContext, bd );
+
+	// Initialize PS cbuffer
+	PSConstBuffer cbl = PSConstBuffer( light );
+	cbl.setPSConstBuffer( g_pd3dDevice, g_pImmediateContext, bd );
+	
+	while ( WM_QUIT != msg.message )
+	{
+		if ( PeekMessage( &msg, NULL, 0, 0, PM_REMOVE ) )
+		{
+			TranslateMessage( &msg );
+			DispatchMessage( &msg );
+		}
+		else
+		{
+			render( geo );
+		}
+	}
+	Release( );
+	delete framebuffer;
+	return msg;
+}
+
+void Device::render( Geo geo )
+{
+	// rotate world
+	VSConstBuffer cb2 = rotateWorld( );
+	cb2.setVSConstBuffer( g_pd3dDevice, g_pImmediateContext, bd );
+
+	// clear renderTargetView & depthStenilView
+	float ClearColor[4] = { 0.f, 0.f, 0.f, 1.f };
+	clearDevice( ClearColor );
+
+	// draw geo
+	g_pImmediateContext->DrawIndexed( geo.getindicesLen( ), 0, 0 );
+	g_pSwapChain->Present( 0, 0 );
+}

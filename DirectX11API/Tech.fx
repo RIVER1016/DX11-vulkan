@@ -1,8 +1,8 @@
 cbuffer VSConstBuffer
 {
-	float4x4 gWorld;
-	float4x4 gView;
-	float4x4 gProjection;
+	float4 gWorld[4];
+	float4 gView[4];
+	float4 gProjection[4];
 };
 
 cbuffer PSConstBuffer
@@ -32,18 +32,21 @@ struct VertexOut
 VertexOut VS( VertexIn vin )
 {
 	VertexOut vout;
-	vout.PosH = mul( float4( vin.Pos, 1.f ), gWorld );
-	vout.PosH = mul( vout.PosH, gView );
-	vout.PosH = mul( vout.PosH, gProjection );
-	vout.PosW = mul( float4( vin.Pos, 1.f ), gWorld );
+	float4x4 World = float4x4( gWorld[0], gWorld[1], gWorld[2], gWorld[3] );
+	float4x4 View = float4x4( gView[0], gView[1], gView[2], gView[3] );
+	float4x4 Projection = float4x4( gProjection[0], gProjection[1], gProjection[2], gProjection[3] );
+	vout.PosH = mul( float4( vin.Pos, 1.f ), World );
+	vout.PosH = mul( vout.PosH, View );
+	vout.PosH = mul( vout.PosH, Projection );
+	vout.PosW = mul( float4( vin.Pos, 1.f ), World );
 	vout.Color = vin.Color;
-	vout.Normal =  mul( float4( vin.Normal, 1.f ), gWorld );
+	vout.Normal =  mul( float4( vin.Normal, 1.f ), World );
 	return vout;
 };
 
 float4 PS( VertexOut pin ) : SV_Target
 {
-	float3 l = - ( float3 )gLightDirection;
+	float3 l = -( float3 )gLightDirection;
 	float3 n = ( float3 )pin.Normal;
 	float nDotL = dot( ( float3 )pin.Normal, l );
 	float3 r = reflect( l, n );

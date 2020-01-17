@@ -1,3 +1,4 @@
+#pragma once
 #include "Screen.h"
 
 LRESULT CALLBACK WndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam )
@@ -21,21 +22,6 @@ LRESULT CALLBACK WndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam 
 	return 0;
 }
 
-HWND Screen::getHwnd( )
-{
-	return g_hWnd;
-}
-
-int Screen::getWidth( )
-{
-	return width;
-}
-
-int Screen::getHeight( )
-{
-	return height;
-}
-
 HRESULT Screen::InitWindow( HINSTANCE hInstance, int nCmdShow )
 {
 	// Register class
@@ -56,7 +42,6 @@ HRESULT Screen::InitWindow( HINSTANCE hInstance, int nCmdShow )
 		return E_FAIL;
 
 	// Create window
-	HINSTANCE g_hInst = hInstance;
 	RECT rc = { 0, 0, 640, 480 };
 	AdjustWindowRect( &rc, WS_OVERLAPPEDWINDOW, FALSE );
 	g_hWnd = CreateWindow( L"Triangle3D", L"Triangle3D", WS_OVERLAPPEDWINDOW,
@@ -66,7 +51,10 @@ HRESULT Screen::InitWindow( HINSTANCE hInstance, int nCmdShow )
 		return E_FAIL;
 
 	ShowWindow( g_hWnd, nCmdShow );
-	width = rc.right - rc.left;
-	height = rc.bottom - rc.top;
 	return S_OK;
+}
+
+HWND Screen::getHwnd( )
+{
+	return g_hWnd;
 }

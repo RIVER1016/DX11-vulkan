@@ -1,9 +1,8 @@
 # DX11-vulkan
-* 实现vulkanMain.cpp分解，提取多个hpp-cpp组合文件包括struct结构成员变量和成员函数(eg: vkDevice、vkSwapchain...
-
+* 实现vulkanMain.cpp分解，提取多个hpp-cpp组合文件包括struct结构成员变量和成员函数 (eg: vkDevice、vkSwapchain...
 * 组合成员变量和成员函数构成类对象
-(eg:
 ```c++
+// eg:
 class Device
 {
 private:

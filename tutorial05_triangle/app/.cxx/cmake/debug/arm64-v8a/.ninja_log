@@ -1,9 +1,0 @@
-# ninja log v5
-0	281	0	CMakeFiles/app-glue.dir/C_/Users/12445/AppData/Local/Android/Sdk/ndk/20.1.5948944/sources/android/native_app_glue/android_native_app_glue.c.o	b738998c579eadfd
-283	727	0	libapp-glue.a	8295e3555e9af776
-740	979	0	CMakeFiles/vktuts.dir/E_/Android/AndroidStudioProjects/android-vulkan-tutorials/common/vulkan_wrapper/vulkan_wrapper.cpp.o	20e1a9656267abec
-733	991	0	CMakeFiles/vktuts.dir/src/main/jni/AndroidMain.cpp.o	237fa62484e1660c
-727	1419	0	CMakeFiles/vktuts.dir/src/main/jni/VulkanMain.cpp.o	1c896a225fc5d376
-1420	1841	0	../../../../build/intermediates/cmake/debug/obj/arm64-v8a/libvktuts.so	10869fba8475c61
-18	1100	0	CMakeFiles/vktuts.dir/src/main/jni/VulkanMain.cpp.o	1c896a225fc5d376
-1101	1988	0	../../../../build/intermediates/cmake/debug/obj/arm64-v8a/libvktuts.so	10869fba8475c61

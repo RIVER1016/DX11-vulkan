@@ -9,7 +9,7 @@
 
 class Buffers {
 public:
-    VkBuffer vertexBuf_;
+	VkBuffer vertexBuf_;
 };
 
 

@@ -9,9 +9,9 @@
 
 class GfxPipeline {
 public:
-    VkPipelineLayout layout_;
-    VkPipelineCache cache_;
-    VkPipeline pipeline_;
+	VkPipelineLayout layout_;
+	VkPipelineCache cache_;
+	VkPipeline pipeline_;
 };
 
 

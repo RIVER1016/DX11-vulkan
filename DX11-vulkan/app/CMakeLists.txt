@@ -12,6 +12,7 @@ set(SWAPCHAN_DIR src/main/swapchain)
 set(BUFFERS_DIR src/main/buffers)
 set(GFXPIPELINE_DIR src/main/gfxPipeline)
 set(RENDER_DIR src/main/render)
+set(UTILS_DIR src/main/utils)
 set(WRAPPER_DIR ../../common/vulkan_wrapper)
 
 add_library(vktuts SHARED
@@ -22,6 +23,7 @@ add_library(vktuts SHARED
             ${BUFFERS_DIR}/Buffers.cpp
             ${GFXPIPELINE_DIR}/GfxPipeline.cpp
             ${RENDER_DIR}/Render.cpp
+            ${UTILS_DIR}/util.cpp
             ${WRAPPER_DIR}/vulkan_wrapper.cpp)
 
 include_directories(${WRAPPER_DIR})

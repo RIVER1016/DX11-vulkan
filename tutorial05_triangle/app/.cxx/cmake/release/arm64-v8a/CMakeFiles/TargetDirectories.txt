@@ -1,0 +1,4 @@
+E:/Android/AndroidStudioProjects/android-vulkan-tutorials/tutorial05_triangle/app/.cxx/cmake/release/arm64-v8a/CMakeFiles/app-glue.dir
+E:/Android/AndroidStudioProjects/android-vulkan-tutorials/tutorial05_triangle/app/.cxx/cmake/release/arm64-v8a/CMakeFiles/vktuts.dir
+E:/Android/AndroidStudioProjects/android-vulkan-tutorials/tutorial05_triangle/app/.cxx/cmake/release/arm64-v8a/CMakeFiles/edit_cache.dir
+E:/Android/AndroidStudioProjects/android-vulkan-tutorials/tutorial05_triangle/app/.cxx/cmake/release/arm64-v8a/CMakeFiles/rebuild_cache.dir

@@ -1,0 +1,73 @@
+{
+  "variant": {
+    "module": {
+      "rootBuildGradleFolder": "E:\\Android\\AndroidStudioProjects\\android-vulkan-tutorials\\tutorial05_triangle",
+      "sdkFolder": "C:\\Users\\12445\\AppData\\Local\\Android\\Sdk",
+      "isNativeCompilerSettingsCacheEnabled": false,
+      "isBuildOnlyTargetAbiEnabled": true,
+      "splitsAbiFilterSet": [],
+      "intermediatesFolder": "E:\\Android\\AndroidStudioProjects\\android-vulkan-tutorials\\tutorial05_triangle\\app\\build\\intermediates",
+      "gradleModulePathName": ":app",
+      "moduleRootFolder": "E:\\Android\\AndroidStudioProjects\\android-vulkan-tutorials\\tutorial05_triangle\\app",
+      "makeFile": "E:\\Android\\AndroidStudioProjects\\android-vulkan-tutorials\\tutorial05_triangle\\app\\CMakeLists.txt",
+      "buildSystem": "CMAKE",
+      "compilerSettingsCacheFolder": "E:\\Android\\AndroidStudioProjects\\android-vulkan-tutorials\\tutorial05_triangle\\.cxx",
+      "cxxFolder": "E:\\Android\\AndroidStudioProjects\\android-vulkan-tutorials\\tutorial05_triangle\\app\\.cxx",
+      "ndkFolder": "C:\\Users\\12445\\AppData\\Local\\Android\\Sdk\\ndk\\20.1.5948944",
+      "ndkVersion": "20.1.5948944",
+      "ndkSupportedAbiList": [
+        "ARMEABI_V7A",
+        "ARM64_V8A",
+        "X86",
+        "X86_64"
+      ],
+      "ndkDefaultAbiList": [
+        "ARMEABI_V7A",
+        "ARM64_V8A",
+        "X86",
+        "X86_64"
+      ],
+      "cmakeToolchainFile": "."
+    },
+    "buildSystemArgumentList": [
+      "-DANDROID_TOOLCHAIN\u003dclang",
+      "-DANDROID_STL\u003dc++_static"
+    ],
+    "cFlagList": [],
+    "cppFlagsList": [],
+    "variantName": "debug",
+    "soFolder": "E:\\Android\\AndroidStudioProjects\\android-vulkan-tutorials\\tutorial05_triangle\\app\\build\\intermediates\\cmake\\debug\\lib",
+    "objFolder": "E:\\Android\\AndroidStudioProjects\\android-vulkan-tutorials\\tutorial05_triangle\\app\\build\\intermediates\\cmake\\debug\\obj",
+    "jsonFolder": "E:\\Android\\AndroidStudioProjects\\android-vulkan-tutorials\\tutorial05_triangle\\app\\.cxx\\cmake\\debug",
+    "gradleBuildOutputFolder": "E:\\Android\\AndroidStudioProjects\\android-vulkan-tutorials\\tutorial05_triangle\\app\\.cxx\\cxx\\debug",
+    "isDebuggableEnabled": true,
+    "validAbiList": [
+      "ARMEABI_V7A",
+      "ARM64_V8A",
+      "X86",
+      "X86_64"
+    ],
+    "buildTargetSet": []
+  },
+  "abi": "X86",
+  "abiPlatformVersion": 26,
+  "cxxBuildFolder": "E:\\Android\\AndroidStudioProjects\\android-vulkan-tutorials\\tutorial05_triangle\\app\\.cxx\\cmake\\debug\\x86",
+  "jsonFile": "E:\\Android\\AndroidStudioProjects\\android-vulkan-tutorials\\tutorial05_triangle\\app\\.cxx\\cmake\\debug\\x86\\android_gradle_build.json",
+  "gradleBuildOutputFolder": "E:\\Android\\AndroidStudioProjects\\android-vulkan-tutorials\\tutorial05_triangle\\app\\.cxx\\cxx\\debug\\x86",
+  "objFolder": "E:\\Android\\AndroidStudioProjects\\android-vulkan-tutorials\\tutorial05_triangle\\app\\build\\intermediates\\cmake\\debug\\obj\\x86",
+  "buildCommandFile": "E:\\Android\\AndroidStudioProjects\\android-vulkan-tutorials\\tutorial05_triangle\\app\\.cxx\\cmake\\debug\\x86\\build_command.txt",
+  "buildOutputFile": "E:\\Android\\AndroidStudioProjects\\android-vulkan-tutorials\\tutorial05_triangle\\app\\.cxx\\cmake\\debug\\x86\\build_output.txt",
+  "modelOutputFile": "E:\\Android\\AndroidStudioProjects\\android-vulkan-tutorials\\tutorial05_triangle\\app\\.cxx\\cmake\\debug\\x86\\build_model.json",
+  "cmake": {
+    "cmakeListsWrapperFile": "E:\\Android\\AndroidStudioProjects\\android-vulkan-tutorials\\tutorial05_triangle\\app\\.cxx\\cxx\\debug\\x86\\CMakeLists.txt",
+    "toolchainWrapperFile": "E:\\Android\\AndroidStudioProjects\\android-vulkan-tutorials\\tutorial05_triangle\\app\\.cxx\\cxx\\debug\\x86\\android_gradle_build.toolchain.cmake",
+    "buildGenerationStateFile": "E:\\Android\\AndroidStudioProjects\\android-vulkan-tutorials\\tutorial05_triangle\\app\\.cxx\\cxx\\debug\\x86\\build_generation_state.json",
+    "cacheKeyFile": "E:\\Android\\AndroidStudioProjects\\android-vulkan-tutorials\\tutorial05_triangle\\app\\.cxx\\cxx\\debug\\x86\\compiler_cache_key.json",
+    "compilerCacheUseFile": "E:\\Android\\AndroidStudioProjects\\android-vulkan-tutorials\\tutorial05_triangle\\app\\.cxx\\cxx\\debug\\x86\\compiler_cache_use.json",
+    "compilerCacheWriteFile": "E:\\Android\\AndroidStudioProjects\\android-vulkan-tutorials\\tutorial05_triangle\\app\\.cxx\\cxx\\debug\\x86\\compiler_cache_write.json",
+    "toolchainSettingsFromCacheFile": "E:\\Android\\AndroidStudioProjects\\android-vulkan-tutorials\\tutorial05_triangle\\app\\.cxx\\cxx\\debug\\x86\\compiler_settings_cache.cmake",
+    "cmakeWrappingBaseFolder": "."
+  },
+  "jsonGenerationLoggingRecordFile": "E:\\Android\\AndroidStudioProjects\\android-vulkan-tutorials\\tutorial05_triangle\\app\\.cxx\\cmake\\debug\\x86\\json_generation_record.json",
+  "compileCommandsJsonFile": "E:\\Android\\AndroidStudioProjects\\android-vulkan-tutorials\\tutorial05_triangle\\app\\.cxx\\cmake\\debug\\x86\\compile_commands.json"
+}

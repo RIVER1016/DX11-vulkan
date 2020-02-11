@@ -1,0 +1,22 @@
+{
+  "buildFiles": [
+    "E:\\Android\\AndroidStudioProjects\\android-vulkan-tutorials\\tutorial05_triangle\\app\\CMakeLists.txt"
+  ],
+  "cleanCommands": [
+    "C:\\Users\\12445\\AppData\\Local\\Android\\Sdk\\cmake\\3.6.4111459\\bin\\cmake.exe --build E:\\Android\\AndroidStudioProjects\\android-vulkan-tutorials\\tutorial05_triangle\\app\\.cxx\\cmake\\release\\x86_64 --target clean"
+  ],
+  "libraries": {
+    "vktuts-Release-x86_64": {
+      "artifactName": "vktuts",
+      "buildCommand": "C:\\Users\\12445\\AppData\\Local\\Android\\Sdk\\cmake\\3.6.4111459\\bin\\cmake.exe --build E:\\Android\\AndroidStudioProjects\\android-vulkan-tutorials\\tutorial05_triangle\\app\\.cxx\\cmake\\release\\x86_64 --target vktuts",
+      "abi": "x86_64",
+      "output": "E:\\Android\\AndroidStudioProjects\\android-vulkan-tutorials\\tutorial05_triangle\\app\\build\\intermediates\\cmake\\release\\obj\\x86_64\\libvktuts.so"
+    },
+    "app-glue-Release-x86_64": {
+      "artifactName": "app-glue",
+      "buildCommand": "C:\\Users\\12445\\AppData\\Local\\Android\\Sdk\\cmake\\3.6.4111459\\bin\\cmake.exe --build E:\\Android\\AndroidStudioProjects\\android-vulkan-tutorials\\tutorial05_triangle\\app\\.cxx\\cmake\\release\\x86_64 --target app-glue",
+      "abi": "x86_64",
+      "output": "E:\\Android\\AndroidStudioProjects\\android-vulkan-tutorials\\tutorial05_triangle\\app\\.cxx\\cmake\\release\\x86_64\\libapp-glue.a"
+    }
+  }
+}

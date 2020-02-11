@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.google.vulkan.tutorials.five.test">
+
+    <uses-sdk android:minSdkVersion="26" android:targetSdkVersion="29" />
+
+    <application android:debuggable="true" >
+        <uses-library android:name="android.test.runner" />
+    </application>
+
+    <instrumentation android:name="android.test.InstrumentationTestRunner"
+                     android:targetPackage="com.google.vulkan.tutorials.five"
+                     android:handleProfiling="false"
+                     android:functionalTest="false"
+                     android:label="Tests for com.google.vulkan.tutorials.five"/>
+</manifest>

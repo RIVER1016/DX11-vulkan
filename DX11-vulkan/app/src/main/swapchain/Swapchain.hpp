@@ -19,6 +19,10 @@ public:
     std::vector<VkImage> displayImages_;
     std::vector<VkImageView> displayViews_;
     std::vector<VkFramebuffer> framebuffers_;
+    void CreateSwapChain( ){ };
+    void DeleteSwapChain( ){ };
+    void CreateFrameBuffers(VkRenderPass& renderPass,
+                                VkImageView depthView = VK_NULL_HANDLE){ };
 };
 
 

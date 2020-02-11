@@ -14,6 +14,10 @@
 
 #include "VulkanMain.hpp"
 #include "../device/Device.hpp"
+#include "../swapchain/Swapchain.hpp"
+#include "../buffers/Buffers.hpp"
+#include "../gfxPipeline/GfxPipeline.hpp"
+#include "../render/Render.hpp"
 #include <vulkan_wrapper.h>
 
 #include <android/log.h>
@@ -41,54 +45,11 @@ static const char* kTAG = "Vulkan-Tutorial05";
   }
 
 // Global Variables ...
-struct VulkanDeviceInfo {
-  bool initialized_;
-
-  VkInstance instance_;
-  VkPhysicalDevice gpuDevice_;
-  VkDevice device_;
-  uint32_t queueFamilyIndex_;
-
-  VkSurfaceKHR surface_;
-  VkQueue queue_;
-};
-VulkanDeviceInfo device;
-
-struct VulkanSwapchainInfo {
-  VkSwapchainKHR swapchain_;
-  uint32_t swapchainLength_;
-
-  VkExtent2D displaySize_;
-  VkFormat displayFormat_;
-
-  // array of frame buffers and views
-  std::vector<VkImage> displayImages_;
-  std::vector<VkImageView> displayViews_;
-  std::vector<VkFramebuffer> framebuffers_;
-};
-VulkanSwapchainInfo swapchain;
-
-struct VulkanBufferInfo {
-  VkBuffer vertexBuf_;
-};
-VulkanBufferInfo buffers;
-
-struct VulkanGfxPipelineInfo {
-  VkPipelineLayout layout_;
-  VkPipelineCache cache_;
-  VkPipeline pipeline_;
-};
-VulkanGfxPipelineInfo gfxPipeline;
-
-struct VulkanRenderInfo {
-  VkRenderPass renderPass_;
-  VkCommandPool cmdPool_;
-  VkCommandBuffer* cmdBuffer_;
-  uint32_t cmdBufferLen_;
-  VkSemaphore semaphore_;
-  VkFence fence_;
-};
-VulkanRenderInfo render;
+Device device;
+Swapchain swapchain;
+Buffers buffers;
+GfxPipeline gfxPipeline;
+Render render;
 
 // Android Native App pointer...
 android_app* androidAppCtx = nullptr;

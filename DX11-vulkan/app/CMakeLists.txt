@@ -8,12 +8,20 @@ add_library( app-glue STATIC ${APP_GLUE_DIR}/android_native_app_glue.c)
 # build vulkan app
 set(SRC_DIR src/main/jni)
 set(DEVICE_DIR src/main/device)
+set(SWAPCHAN_DIR src/main/swapchain)
+set(BUFFERS_DIR src/main/buffers)
+set(GFXPIPELINE_DIR src/main/gfxPipeline)
+set(RENDER_DIR src/main/render)
 set(WRAPPER_DIR ../../common/vulkan_wrapper)
 
 add_library(vktuts SHARED
             ${SRC_DIR}/VulkanMain.cpp
             ${SRC_DIR}/AndroidMain.cpp
             ${DEVICE_DIR}/Device.cpp
+            ${SWAPCHAN_DIR}/Swapchain.cpp
+            ${BUFFERS_DIR}/Buffers.cpp
+            ${GFXPIPELINE_DIR}/GfxPipeline.cpp
+            ${RENDER_DIR}/Render.cpp
             ${WRAPPER_DIR}/vulkan_wrapper.cpp)
 
 include_directories(${WRAPPER_DIR})

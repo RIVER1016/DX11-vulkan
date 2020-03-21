@@ -68,8 +68,8 @@ g_pImmediateContext->IASetPrimitiveTopology( D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELI
 ```
 
 D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST是枚举类型中的参数，表示这串顶点作为三角形顶点看，如下图：
+![image-21224](https://user-images.githubusercontent.com/37433487/77225687-4e465300-6bac-11ea-9288-7275e7a29568.png)
 
-![image-20200102193519981](C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20200102193519981.png)
 
 6. 光栅化渲染状态设置，使用光栅化渲染一个三角形：
 
